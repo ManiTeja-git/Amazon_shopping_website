@@ -1,4 +1,4 @@
-import { cart } from "../data/cart.js";
+import { cart, addToCart } from "../data/cart.js";
 import { products } from "../data/products.js";
 let productsHTML = "";
 
@@ -46,46 +46,38 @@ products.forEach((product) => {
 
 document.querySelector(".js-product-grid").innerHTML = productsHTML;
 
+function updateCartQuantity() {
+  let cartQuantity = 0;
+  cart.forEach((cartItem) => {
+    cartQuantity += cartItem.quantity;
+  });
+
+  document.querySelector(".js-cart-quantity").innerHTML = cartQuantity;
+}
+
+function renderAddedToCart(productId) {
+  const addedToCartElement = document.querySelector(
+    `.js-added-to-cart-${productId}`
+  );
+
+  addedToCartElement.classList.add("added-to-cart-success");
+
+  return setTimeout(() => {
+    addedToCartElement.classList.remove("added-to-cart-success");
+  }, 2000);
+}
+
 document.querySelectorAll(".js-add-to-cart").forEach((button) => {
   let timeOutId;
   button.addEventListener("click", () => {
     const productId = button.dataset.productId;
 
-    let matchingItem;
+    addToCart(productId);
+    updateCartQuantity();
 
-    cart.forEach((item) => {
-      if (item.productId === productId) {
-        matchingItem = item;
-      }
-    });
-
-    const quantity = Number(
-      document.querySelector(`.js-quantity-selector-${productId}`).value
-    );
-    if (matchingItem) {
-      matchingItem.quantity += quantity;
-    } else {
-      cart.push({
-        productId,
-        quantity,
-      });
+    if (timeOutId) {
+      clearTimeout(timeOutId);
     }
-
-    let cartQuantity = 0;
-    cart.forEach((item) => {
-      cartQuantity += item.quantity;
-    });
-
-    document.querySelector(".js-cart-quantity").innerHTML = cartQuantity;
-
-    const addedToCartElement = document.querySelector(
-      `.js-added-to-cart-${productId}`
-    );
-    addedToCartElement.classList.add("added-to-cart-success");
-
-    clearTimeout(timeOutId);
-    timeOutId = setTimeout(() => {
-      addedToCartElement.classList.remove("added-to-cart-success");
-    }, 2000);
+    timeOutId = renderAddedToCart(productId);
   });
 });
