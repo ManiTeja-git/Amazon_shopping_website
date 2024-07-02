@@ -12,6 +12,7 @@ import {
   deliveryOptions,
   getDeliveryOption,
 } from "../../data/delivery-options.js";
+import { renderPaymentSummary } from "./paymentSummary.js";
 
 export function renderOrderSummary() {
   let cartSummaryHTML = "";
@@ -56,7 +57,9 @@ export function renderOrderSummary() {
               Update
             </span>
 
-            <input class="quantity-input js-quantity-input">
+            <input class="quantity-input js-quantity-input-${
+              matchingProduct.id
+            }">
             <span class="save-quantity-link link-primary js-save-quantity-link" data-product-id="${
               matchingProduct.id
             }">Save</span>
@@ -125,6 +128,7 @@ export function renderOrderSummary() {
       );
       container.remove();
       updateCartQuantity();
+      renderPaymentSummary();
     });
   });
 
@@ -155,7 +159,7 @@ export function renderOrderSummary() {
       );
       cartItemContainer.classList.remove("is-editing-quantity");
       const newQuantity = Number(
-        document.querySelector(".js-quantity-input").value
+        document.querySelector(`.js-quantity-input-${productId}`).value
       );
       updateProductQuantity(productId, newQuantity);
 
@@ -164,6 +168,7 @@ export function renderOrderSummary() {
       );
       quantityLabel.innerHTML = newQuantity;
       updateCartQuantity();
+      renderPaymentSummary();
     });
   });
 
@@ -172,6 +177,7 @@ export function renderOrderSummary() {
       const { productId, deliveryOptionId } = element.dataset;
       updateDeliveryOption(productId, deliveryOptionId);
       renderOrderSummary();
+      renderPaymentSummary();
     });
   });
 }
