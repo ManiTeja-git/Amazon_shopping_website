@@ -17,7 +17,7 @@ export function loadCartFromStorage() {
   ];
 }
 
-function saveToStorage() {
+export function saveToStorage() {
   localStorage.setItem("cart", JSON.stringify(cart));
 }
 
@@ -30,9 +30,15 @@ export function addToCart(productId) {
     }
   });
 
-  const quantity = Number(
-    document.querySelector(`.js-quantity-selector-${productId}`).value
-  );
+  let quantity;
+  if (document.querySelector(`.js-quantity-selector-${productId}`)) {
+    quantity = Number(
+      document.querySelector(`.js-quantity-selector-${productId}`).value
+    );
+  } else {
+    quantity = 1;
+  }
+
   if (matchingItem) {
     matchingItem.quantity += quantity;
   } else {
