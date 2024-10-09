@@ -218,3 +218,11 @@
     padding: 12px;
   }
 }
+
+.view-products-button {
+  background-color: rgb(255, 216, 20);
+  border: none;
+  padding: 5px 10px;
+  font-size: 16px;
+  border-radius: 5px;
+}

@@ -170,4 +170,11 @@ export function renderOrderSummary() {
       renderPaymentSummary();
     });
   });
+
+  if (cart.length === 0) {
+    document.querySelector(".js-order-summary").innerHTML = `
+      <div>Your cart is empty.</div>
+      <a href="./amazon.html"><button class="view-products-button button-primary">View products</button> </a>
+     `;
+  }
 }

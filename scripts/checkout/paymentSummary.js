@@ -59,6 +59,16 @@ export function renderPaymentSummary() {
   `;
 
   document.querySelector(".js-payment-summary").innerHTML = paymentSummaryHTML;
+  const placeOrderButton = document.querySelector(".js-place-order");
+  console.log(placeOrderButton);
+  console.log(cart.length);
+  if (cart.length === 0) {
+    placeOrderButton.disabled = true;
+    placeOrderButton.classList.add("js-place-order-disabled");
+  } else {
+    placeOrderButton.disabled = false;
+    placeOrderButton.classList.remove("js-place-order-disabled");
+  }
 
   document
     .querySelector(".js-place-order")
@@ -76,8 +86,10 @@ export function renderPaymentSummary() {
         const order = await response.json();
         console.log(order);
         addOrder(order);
+        const previousCart = [...cart];
         cart.length = 0;
         saveToStorage();
+        localStorage.setItem("previousCart", JSON.stringify(previousCart));
       } catch (error) {
         console.log("Unexpected errror, try again");
       }

@@ -233,3 +233,16 @@
 .is-editing-quantity .quantity-label {
   display: none;
 }
+
+.view-products-button {
+  background-color: rgb(255, 216, 20);
+  border: none;
+  padding: 9px 16px;
+  font-size: 16px;
+  border-radius: 8px;
+  margin-top: 10px;
+}
+.js-place-order-disabled {
+  opacity: 0.5;
+  cursor: default;
+}

@@ -2,7 +2,28 @@ import { orders } from "../data/orders.js";
 import { getProduct } from "../data/products.js";
 import { formatCurreny } from "./utils/money.js";
 import dayjs from "https://unpkg.com/dayjs@1.11.10/esm/index.js";
-import { addToCart, calculateCartQuantity } from "../data/cart.js";
+import { addToCart, calculateCartQuantity, cart } from "../data/cart.js";
+import {
+  getDeliveryOption,
+  calculateDeliveryDate,
+} from "../data/delivery-options.js";
+
+const existingCart = JSON.parse(localStorage.getItem("existing-cart")) || [];
+
+const previousCart = JSON.parse(localStorage.getItem("previousCart"));
+
+const newCart = [...existingCart, ...previousCart];
+localStorage.setItem("existing-cart", JSON.stringify(newCart));
+
+function getCartItem(productId) {
+  let matchingItem;
+  newCart.forEach((item) => {
+    if (item.productId === productId) {
+      matchingItem = item;
+    }
+  });
+  return matchingItem;
+}
 
 let ordersHTML = "";
 
@@ -39,6 +60,8 @@ function productsListHTML(order) {
 
   order.products.forEach((productDetails) => {
     const product = getProduct(productDetails.productId);
+    const cartItem = getCartItem(productDetails.productId);
+    const deliveryOption = getDeliveryOption(cartItem.deliveryOptionId);
 
     productsListHTML += `
         <div class="product-image-container">
@@ -49,7 +72,7 @@ function productsListHTML(order) {
             ${product.name}
           </div>
           <div class="product-delivery-date">
-            Arriving on: ${dayjs(productDetails.estimatedDeliveryTime).format(
+            Arriving on: ${dayjs(calculateDeliveryDate(deliveryOption)).format(
               "MMMM D"
             )}
           </div>
@@ -80,8 +103,6 @@ document.querySelectorAll(".js-buy-again").forEach((button) => {
   button.addEventListener("click", () => {
     addToCart(button.dataset.productId);
 
-    // display a message that the product was added,
-    // then change it back after a second.
     button.innerHTML = "Added";
     setTimeout(() => {
       button.innerHTML = `

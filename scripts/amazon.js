@@ -5,7 +5,27 @@ import { deliveryOptions } from "../data/delivery-options.js";
 
 let productsHTML = "";
 
-products.forEach((product) => {
+const url = new URL(window.location.href);
+const search = url.searchParams.get("search");
+
+let filteredProducts = products;
+
+if (search) {
+  filteredProducts = products.filter((product) => {
+    let macthingKeyWord = false;
+    product.keywords.forEach((keyword) => {
+      if (search.toLowerCase().includes(keyword.toLowerCase())) {
+        macthingKeyWord = true;
+      }
+    });
+    return (
+      macthingKeyWord ||
+      product.name.toLowerCase().includes(search.toLowerCase())
+    );
+  });
+}
+
+filteredProducts.forEach((product) => {
   productsHTML += `<div class="product-container">
     <div class="product-image-container">
       <img class="product-image" src="${product.image}" />
@@ -84,3 +104,12 @@ document.querySelectorAll(".js-add-to-cart").forEach((button) => {
 });
 
 updateCartQuantity();
+
+document
+  .querySelector(".js-search-bar")
+  .addEventListener("keydown", (event) => {
+    if (event.key === "Enter") {
+      const searchTerm = document.querySelector(".js-search-bar").value;
+      window.location.href = `amazon.html?search=${searchTerm}`;
+    }
+  });
